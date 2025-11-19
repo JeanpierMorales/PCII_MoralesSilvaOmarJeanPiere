@@ -1,4 +1,4 @@
-name: CI de Calculadora con Jest
+name: CI/CD Calculadora
 
 on:
   push:
@@ -12,19 +12,23 @@ jobs:
       - name: Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: Configurar Node.js 18
+      - name: Instalar Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
       - name: Instalar dependencias
-        run: npm install
+        run: npm ci || npm install
 
-      - name: Permisos
+      - name: Dar permisos al Jest binario
         run: chmod +x ./node_modules/.bin/jest
 
-      - name: Ejecutar pruebas Jest
-        run: npm test
+      - name: Ejecutar pruebas
+        run: npx jest --runInBand
 
-      - name: Simular Despliegue Exitoso
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simular despliegue
         run: echo "🚀 Deploy exitoso"
